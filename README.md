@@ -25,6 +25,11 @@ Skills for ambitious builders.
 - [poli-integrated-exam](skills/poli-integrated-exam/SKILL.md): writes practice exams for Poli-USP's integrated Calculus II and Linear Algebra II tests (in Portuguese).
 - [anki-to-gizmo](skills/anki-to-gizmo/SKILL.md): converts Anki decks into a text file Gizmo can import.
 
+### Notes and career
+
+- [project-to-notes](skills/project-to-notes/SKILL.md): turns a Claude Project or long conversation into atomic notes and a project page for an Obsidian vault.
+- [brazil-hiring-prep](skills/brazil-hiring-prep/SKILL.md): prepares for Brazilian summer job, trainee and internship selection processes: tests, profiles, group dynamics, cases and interviews (in Portuguese).
+
 ## Install
 
 Each skill's README has its own install steps. As Claude Code plugins:
