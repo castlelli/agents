@@ -1,0 +1,580 @@
+<title>Prova Integradora Pilar II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Caveat:wght@500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: caderno de prova em folhas empilhadas (uma questão por folha), barra fixa com cronômetro; correção em "caneta vermelha" ao entregar */
+:root{
+  --paper:#f6f7f9; --sheet:#ffffff; --ink:#1b2433; --muted:#5a6375; --rule:#d6dbe3;
+  --accent:#23408e; --pen:#c4232c; --pen-bg:#fdf1f1; --ok:#1d7a4b; --warn:#b45309;
+  --serif:"Source Serif 4","STIX Two Text",Georgia,"Times New Roman",serif;
+  --hand:"Caveat","Segoe Print","Comic Sans MS",cursive;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111419; --sheet:#181c22; --ink:#e5e8ee; --muted:#9aa3b3; --rule:#2d343e;
+  --accent:#93a9ff; --pen:#ff6f6f; --pen-bg:#2a1a1c; --ok:#4fc58b; --warn:#f0a646; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#111419; --sheet:#181c22; --ink:#e5e8ee; --muted:#9aa3b3; --rule:#2d343e;
+  --accent:#93a9ff; --pen:#ff6f6f; --pen-bg:#2a1a1c; --ok:#4fc58b; --warn:#f0a646; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.55}
+.wrap{max-width:860px;margin:0 auto;padding-inline:16px;padding-block:84px 64px;display:flex;flex-direction:column;gap:28px}
+/* barra */
+.bar{position:fixed;top:0;left:0;right:0;z-index:10;background:var(--sheet);border-bottom:1px solid var(--rule);
+  padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px}
+.bar-in{max-width:860px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.bar h1{font-size:15px;margin:0;font-weight:600;flex:1 1 200px;min-width:0}
+.bar h1 small{display:block;font-weight:400;color:var(--muted);font-size:12.5px}
+.clock{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:20px;letter-spacing:.02em}
+.clock.warn{color:var(--pen);animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.clock.warn{animation:none}}
+.score{font-family:var(--hand);font-size:26px;color:var(--pen);line-height:1}
+button{font:600 14px var(--serif);border-radius:6px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);padding:7px 12px;cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--sheet)}
+button.danger{border-color:var(--pen);color:var(--pen)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.45;cursor:default}
+/* folhas */
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:3px;padding:28px clamp(16px,4vw,40px);
+  box-shadow:0 1px 0 var(--rule),0 8px 24px -18px rgba(0,0,0,.35);min-width:0}
+.cover h2{font-size:clamp(22px,3.4vw,30px);margin:0 0 2px;text-wrap:balance}
+.cover .sub{color:var(--muted);margin:0 0 20px}
+.idgrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin-bottom:22px}
+.idgrid label{display:flex;flex-direction:column;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);gap:4px;min-width:0}
+.idgrid input{font:16px var(--serif);border:0;border-bottom:1px solid var(--ink);background:transparent;color:var(--ink);padding:4px 2px;min-width:0}
+.cover-grid{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:28px;align-items:start}
+.notes{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.notes th,.notes td{border:1px solid var(--ink);padding:6px 10px;text-align:center}
+.notes th{font-weight:600;font-size:14px}
+.notes td.n{font-family:var(--hand);font-size:22px;color:var(--pen);min-width:64px}
+.instr h3{font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 8px}
+.instr ol{margin:0;padding-left:20px;font-size:15px;display:flex;flex-direction:column;gap:5px}
+.boa{font-weight:700;text-align:center;letter-spacing:.08em;margin:18px 0 0}
+.qhead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:10px}
+.qhead h2{font-size:20px;margin:0}
+.qhead h2 span{font-weight:400}
+.qnote{font-family:var(--hand);font-size:24px;color:var(--pen)}
+.intro{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:22px;align-items:start}
+.intro p{margin:0 0 10px}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;align-items:center}
+figure svg{width:100%;max-width:260px;height:auto;color:var(--ink)}
+figcaption{font-size:13px;color:var(--muted);text-align:center;font-variant:small-caps;letter-spacing:.03em}
+.disp{overflow-x:auto;margin:6px 0 12px}
+.items{display:flex;flex-direction:column;gap:22px;margin-top:14px}
+.item{display:flex;flex-direction:column;gap:8px;min-width:0}
+.item>p{margin:0}
+.item b.lbl{margin-right:4px}
+.pts{color:var(--muted);font-size:14px;white-space:nowrap}
+textarea{width:100%;min-height:96px;font:15px/1.5 var(--serif);color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:8px 10px;resize:vertical;
+  background-image:repeating-linear-gradient(transparent 0 22px,var(--rule) 22px 23px);background-attachment:local;line-height:23px}
+.finals{display:flex;flex-wrap:wrap;gap:10px 18px}
+.final{display:flex;align-items:center;gap:8px;font-size:15px;flex-wrap:wrap}
+.final input{width:110px;font:15px var(--mono);font-variant-numeric:tabular-nums;padding:5px 8px;border:1px solid var(--rule);border-radius:4px;background:var(--sheet);color:var(--ink)}
+.final .chk{font-family:var(--hand);font-size:21px}
+.final .chk.ok{color:var(--ok)} .final .chk.bad{color:var(--pen)}
+/* correção */
+.corr{border-left:3px solid var(--pen);background:var(--pen-bg);padding:10px 14px;border-radius:0 4px 4px 0;display:flex;flex-direction:column;gap:8px;min-width:0}
+.corr .tag{font-family:var(--hand);font-size:22px;color:var(--pen);line-height:1}
+.corr p{margin:0}
+.rub{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+.rub label{display:flex;gap:8px;align-items:flex-start;font-size:15px;cursor:pointer}
+.rub input{margin-top:5px;accent-color:var(--pen)}
+.rub .p{font-family:var(--mono);font-size:13px;color:var(--pen);margin-left:auto;white-space:nowrap}
+.trap{font-size:15px;color:var(--muted)}
+.trap b{color:var(--pen);font-weight:600}
+.interp{font-style:italic}
+.foot{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);padding-top:8px;margin-top:16px}
+mjx-container{max-width:100%}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden}
+@media (max-width:680px){
+  .cover-grid,.intro{grid-template-columns:1fr}
+  .intro figure{order:-1}
+  .idgrid{grid-template-columns:1fr 1fr}
+  .idgrid label:first-child{grid-column:1/-1}
+  body{font-size:16px}
+}
+</style>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['\\[','\\]']]},options:{ignoreHtmlClass:'nomath'},svg:{fontCache:'global'},
+  startup:{ready(){MathJax.startup.defaultReady();}}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js" defer></script>
+
+<header class="bar">
+  <div class="bar-in">
+    <h1>Pilar II · Prova Integradora (simulado)<small>Cálculo II + Álgebra Linear II · 3 questões · 4 h</small></h1>
+    <span class="clock" id="clock" aria-live="off">4:00:00</span>
+    <button id="btnStart" class="primary">Iniciar</button>
+    <button id="btnSubmit" class="danger">Entregar</button>
+    <button id="btnReset" hidden>Refazer</button>
+    <span class="score" id="scoreTop" hidden></span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section class="sheet cover" aria-label="Capa">
+  <h2>Prova Integradora — Pilar II</h2>
+  <p class="sub">Escola Politécnica da USP · Cálculo Diferencial e Integral II e Álgebra Linear II · Simulado</p>
+  <div class="idgrid">
+    <label for="idNome">Nome<input id="idNome" autocomplete="off"></label>
+    <label for="idNusp">NUSP<input id="idNusp" inputmode="numeric" autocomplete="off"></label>
+    <label for="idTurma">Turma<input id="idTurma" autocomplete="off"></label>
+  </div>
+  <div class="cover-grid">
+    <div class="instr">
+      <h3>Instruções</h3>
+      <ol>
+        <li>Não é permitido portar celular, mesmo desligado, durante o exame. Não custa repetir: celular longe, junto com a mochila.</li>
+        <li>Esta prova tem duração máxima de 4 horas. O cronômetro no alto só começa quando você clicar em <em>Iniciar</em>; ao zerar, a prova é entregue automaticamente.</li>
+        <li>Este caderno consiste de 3 questões dissertativas, uma em cada folha. Resolva no papel ou no campo de cada item; use o campo de resposta final quando houver.</li>
+        <li>Mantenha a organização e a legibilidade, justificando todas as suas afirmações. Resposta sem justificativa não pontua.</li>
+        <li>Ao entregar, aparece a correção de cada item com a rubrica. Marque os critérios que você cumpriu, com a honestidade de um corretor.</li>
+      </ol>
+      <p class="boa">BOA PROVA!</p>
+    </div>
+    <table class="notes" aria-label="Quadro de notas">
+      <thead><tr><th>Questão</th><th>Valor</th><th>Nota</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>3,5</td><td class="n" id="nt1"></td></tr>
+        <tr><td>2</td><td>3,0</td><td class="n" id="nt2"></td></tr>
+        <tr><td>3</td><td>3,5</td><td class="n" id="nt3"></td></tr>
+        <tr><th>Total</th><th>10,0</th><td class="n" id="ntT"></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= QUESTÃO 1 ================= -->
+<section class="sheet q" data-q="1" aria-labelledby="q1h">
+  <div class="qhead"><h2 id="q1h">Questão 1 <span>(Valor: 3,5 pontos). Isotermas de um processador</span></h2><span class="qnote" data-qnote="1"></span></div>
+  <div class="intro">
+    <div>
+      <p>Uma placa de circuito tem um processador centrado na origem de um sistema de coordenadas $Oxy$, com $x$ e $y$ em centímetros. Em regime permanente, um modelo simplificado da temperatura da placa na região $|x|\le 4$, $|y|\le 4$ é</p>
+      <div class="disp">\[ T(x,y)=80-\tfrac14\left(5x^2-4xy+8y^2\right)\quad({}^{\circ}\mathrm{C}). \]</div>
+      <p>Um sensor de temperatura está soldado no ponto $P=(2,2)$. O conjunto dos pontos da placa com a mesma temperatura é chamado de <em>isoterma</em>.</p>
+    </div>
+    <figure>
+      <svg viewBox="0 0 240 240" role="img" aria-label="Placa quadrada de -4 a 4 cm nos dois eixos, processador quadrado centrado na origem, sensor no ponto P de coordenadas 2 e 2, seta tracejada de P até a origem.">
+        <rect x="20" y="20" width="200" height="200" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <g stroke="currentColor" stroke-opacity=".18" stroke-width="1">
+          <path d="M45 20V220M70 20V220M95 20V220M145 20V220M170 20V220M195 20V220M20 45H220M20 70H220M20 95H220M20 145H220M20 170H220M20 195H220"/>
+        </g>
+        <path d="M120 230V10M10 120H232" stroke="currentColor" stroke-width="1.1" fill="none"/>
+        <path d="M120 10l-4 8h8zM232 120l-8-4v8z" fill="currentColor"/>
+        <rect x="105" y="105" width="30" height="30" fill="var(--accent)" fill-opacity=".22" stroke="var(--accent)" stroke-width="1.5"/>
+        <path d="M110 105v-5M120 105v-5M130 105v-5M110 135v5M120 135v5M130 135v5M105 110h-5M105 120h-5M105 130h-5M135 110h5M135 120h5M135 130h5" stroke="var(--accent)" stroke-width="1.2"/>
+        <path d="M168 72L128 112" stroke="currentColor" stroke-dasharray="4 3" stroke-width="1.2" fill="none"/>
+        <circle cx="170" cy="70" r="5" fill="var(--pen)"/>
+        <text x="178" y="66" font-size="14" fill="currentColor" font-style="italic" font-family="var(--serif)">P</text>
+        <text x="226" y="135" font-size="13" fill="currentColor" font-style="italic" font-family="var(--serif)">x</text>
+        <text x="126" y="16" font-size="13" fill="currentColor" font-style="italic" font-family="var(--serif)">y</text>
+        <text x="165" y="134" font-size="11" fill="currentColor" font-family="var(--serif)">2</text>
+        <text x="108" y="74" font-size="11" fill="currentColor" font-family="var(--serif)">2</text>
+        <text x="213" y="134" font-size="11" fill="currentColor" font-family="var(--serif)">4</text>
+      </svg>
+      <figcaption>Figura 1. Placa, processador e sensor.</figcaption>
+    </figure>
+  </div>
+
+  <div class="items">
+    <div class="item" data-item="1a">
+      <p><b class="lbl">a.</b> Calcule $\nabla T(P)$. Determine a derivada direcional de $T$ em $P$ na direção que aponta de $P$ para o centro do processador, e o vetor unitário que dá a direção em que a temperatura diminui mais rapidamente a partir de $P$. <span class="pts">[0,8]</span></p>
+      <textarea id="t-1a" aria-label="Resolução do item 1a"></textarea>
+      <div class="finals"><div class="final"><label for="f-1a">Derivada direcional (°C/cm) ≈</label><input id="f-1a" data-ans="6.3640" data-tol="0.02" inputmode="decimal"><span class="chk" aria-live="polite"></span></div></div>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>$\nabla T=-\tfrac14(10x-4y,\,-4x+16y)$, logo $\nabla T(P)=(-3,-6)$. A direção de $P$ para a origem é $\vec u=-\tfrac{(2,2)}{\|(2,2)\|}=-\tfrac{1}{\sqrt2}(1,1)$, e</p>
+        <p>\[ \frac{\partial T}{\partial \vec u}(P)=\nabla T(P)\cdot\vec u=\frac{3+6}{\sqrt2}=\frac{9}{\sqrt2}\approx 6{,}36\ {}^{\circ}\mathrm{C/cm}. \]</p>
+        <p>A temperatura diminui mais rapidamente na direção de $-\nabla T(P)$, isto é, $\dfrac{(1,2)}{\sqrt5}$, com taxa $\|\nabla T(P)\|=3\sqrt5\approx 6{,}71\ {}^{\circ}\mathrm{C/cm}$.</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Gradiente correto em $P$ <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Usa vetor <em>unitário</em> e calcula $\nabla T\cdot\vec u$ <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Direção de maior queda $=-\nabla T/\|\nabla T\|$ <span class="p">0,2</span></label></li>
+        </ul>
+        <p class="trap"><b>Erro típico:</b> usar $(−2,−2)$ sem normalizar, o que dá $18$ em vez de $9/\sqrt2$; ou responder $+\nabla T$ (direção de maior <em>aumento</em>).</p>
+      </div>
+    </div>
+
+    <div class="item" data-item="1b">
+      <p><b class="lbl">b.</b> Mostre que $P$ pertence à isoterma de $71\,{}^{\circ}\mathrm{C}$. Use o Teorema da Função Implícita para justificar que, perto de $P$, essa isoterma é o gráfico de uma função $y=\varphi(x)$; calcule $\varphi'(2)$ e escreva a equação da reta tangente à isoterma em $P$. Determine os pontos da isoterma nos quais o teorema <em>não</em> garante que ela seja, localmente, gráfico de uma função de $x$. <span class="pts">[1,0]</span></p>
+      <textarea id="t-1b" aria-label="Resolução do item 1b"></textarea>
+      <div class="finals"><div class="final"><label for="f-1b">$\varphi'(2)=$</label><input id="f-1b" data-ans="-0.5" data-tol="0.005" inputmode="decimal"><span class="chk" aria-live="polite"></span></div></div>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>$T(P)=80-\tfrac14(20-16+32)=71$. A isoterma é $G(x,y)=5x^2-4xy+8y^2-36=0$. $G$ é polinomial (classe $C^1$), $G(P)=0$ e $G_y(P)=-4x+16y\big|_P=24\neq0$. Pelo TFI existe $\varphi$ de classe $C^1$, definida perto de $x=2$, com $\varphi(2)=2$ e $G(x,\varphi(x))=0$, e</p>
+        <p>\[ \varphi'(2)=-\frac{G_x(P)}{G_y(P)}=-\frac{10\cdot2-4\cdot2}{24}=-\frac12,\qquad \text{reta tangente: } y=2-\tfrac12(x-2)\iff x+2y=6. \]</p>
+        <p>O teorema não se aplica onde $G_y=0$: $x=4y$. Substituindo, $80y^2-16y^2+8y^2=72y^2=36$, logo $\left(2\sqrt2,\tfrac{\sqrt2}{2}\right)$ e $\left(-2\sqrt2,-\tfrac{\sqrt2}{2}\right)$. Nesses pontos a tangente à isoterma é vertical.</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Verifica $T(P)=71$ e escreve $G=0$ <span class="p">0,2</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Enuncia as hipóteses do TFI ($C^1$, $G(P)=0$, $G_y(P)\neq0$) <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> $\varphi'(2)=-1/2$ e reta tangente <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Os dois pontos com $G_y=0$ <span class="p">0,2</span></label></li>
+        </ul>
+        <p class="trap"><b>Erro típico:</b> esquecer o sinal de menos em $\varphi'=-G_x/G_y$, ou citar só "$G_y\neq0$" sem verificar que $P$ está na curva.</p>
+      </div>
+    </div>
+
+    <div class="item" data-item="1c">
+      <p><b class="lbl">c.</b> Escreva $5x^2-4xy+8y^2=\begin{pmatrix}x&amp;y\end{pmatrix}A\begin{pmatrix}x\\y\end{pmatrix}$ com $A$ simétrica. Determine os autovalores de $A$ e uma base ortonormal $B=\{\vec v_1,\vec v_2\}$ de $\mathbb R^2$ formada por autovetores de $A$. Escrevendo $(x,y)=u\,\vec v_1+v\,\vec v_2$, obtenha a equação da isoterma de $71\,{}^{\circ}\mathrm{C}$ nas coordenadas $(u,v)$, identifique a curva e dê os comprimentos e as direções dos seus semieixos. <span class="pts">[1,0]</span></p>
+      <textarea id="t-1c" aria-label="Resolução do item 1c"></textarea>
+      <div class="finals">
+        <div class="final"><label for="f-1c1">Semieixo maior (cm)</label><input id="f-1c1" data-ans="3" data-tol="0.01" inputmode="decimal"><span class="chk" aria-live="polite"></span></div>
+        <div class="final"><label for="f-1c2">Semieixo menor (cm)</label><input id="f-1c2" data-ans="2" data-tol="0.01" inputmode="decimal"><span class="chk" aria-live="polite"></span></div>
+      </div>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>\[ A=\begin{pmatrix}5&amp;-2\\-2&amp;8\end{pmatrix},\qquad \det(A-\lambda I)=\lambda^2-13\lambda+36=(\lambda-4)(\lambda-9). \]</p>
+        <p>Para $\lambda=4$: $(A-4I)\vec v=0\Rightarrow x=2y$, $\vec v_1=\tfrac{1}{\sqrt5}(2,1)$. Para $\lambda=9$: $2x+y=0$, $\vec v_2=\tfrac{1}{\sqrt5}(1,-2)$. Como $\vec v_1\perp\vec v_2$ e ambos são unitários, $B$ é ortonormal (e isso era esperado, pois $A$ é simétrica).</p>
+        <p>Com $(x,y)=u\vec v_1+v\vec v_2$, a forma quadrática vira $4u^2+9v^2$, e a isoterma $5x^2-4xy+8y^2=36$ fica</p>
+        <p>\[ \frac{u^2}{9}+\frac{v^2}{4}=1: \]</p>
+        <p>uma elipse centrada no processador, com semieixo maior $3$ cm na direção de $\vec v_1=(2,1)/\sqrt5$ e semieixo menor $2$ cm na direção de $\vec v_2=(1,-2)/\sqrt5$. Conferência com (b): o maior valor de $|x|$ na elipse é $\sqrt{9\cdot\tfrac45+4\cdot\tfrac15}=2\sqrt2$, exatamente onde a tangente é vertical.</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Matriz simétrica $A$ correta (termo cruzado dividido por 2) <span class="p">0,2</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Polinômio característico e autovalores $4$ e $9$ <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Autovetores unitários e ortogonais <span class="p">0,2</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Equação em $(u,v)$, elipse, semieixos e direções <span class="p">0,3</span></label></li>
+        </ul>
+        <p class="trap"><b>Erro típico:</b> montar $A$ com $-4$ fora da diagonal (a forma vira $5x^2-8xy+8y^2$), ou trocar os semieixos ($\sqrt{36/4}=3$ vai com o autovalor <em>menor</em>).</p>
+      </div>
+    </div>
+
+    <div class="item" data-item="1d">
+      <p><b class="lbl">d.</b> Um colega afirmou: <em>"como o processador está na origem, o gradiente de $T$ sempre aponta na direção radial; para resfriar o sensor o mais rápido possível, basta deslocá-lo em linha reta rumo à origem."</em> Mostre que $\nabla T(x,y)=-\tfrac12A\begin{pmatrix}x\\y\end{pmatrix}$ e determine o conjunto dos pontos $(x,y)\neq(0,0)$ em que a afirmação sobre o gradiente é verdadeira. Ela vale em $P$? Justifique. <span class="pts">[0,7]</span></p>
+      <textarea id="t-1d" aria-label="Resolução do item 1d"></textarea>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>$\nabla(5x^2-4xy+8y^2)=(10x-4y,\,-4x+16y)=2A(x,y)^{T}$, logo $\nabla T=-\tfrac12A(x,y)^T$. O gradiente é radial em $\vec p=(x,y)\neq\vec 0$ se e só se $A\vec p=\lambda\vec p$ para algum $\lambda$, isto é, se $\vec p$ é autovetor de $A$. O conjunto pedido são as retas $x=2y$ e $y=-2x$ (eixos principais da elipse), sem a origem.</p>
+        <p>Em $P$: $A(2,2)^T=(6,12)$, que não é múltiplo de $(2,2)$. A afirmação é falsa em $P$, como já se via em (a): a taxa rumo à origem, $9/\sqrt2\approx6{,}36$, é menor que $\|\nabla T(P)\|\approx6{,}71$.</p>
+        <p class="interp">Interpretação possível: o gradiente é normal à isoterma, e numa elipse a normal só passa pelo centro nos vértices. Fora dos eixos principais, o caminho de resfriamento mais rápido não aponta para o processador.</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Mostra $\nabla T=-\tfrac12A\vec p$ <span class="p">0,2</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> "Radial" $\iff$ $\vec p$ autovetor de $A$ <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Retas $x=2y$, $y=-2x$ e conclusão em $P$ <span class="p">0,2</span></label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUESTÃO 2 ================= -->
+<section class="sheet q" data-q="2" aria-labelledby="q2h">
+  <div class="qhead"><h2 id="q2h">Questão 2 <span>(Valor: 3,0 pontos). Atuador eletrostático MEMS</span></h2><span class="qnote" data-qnote="2"></span></div>
+  <div class="intro">
+    <div>
+      <p>Um atuador MEMS é um capacitor de placas paralelas: uma placa é fixa e a outra, de área $A$, está presa a uma mola de constante $k$ e pode se mover perpendicularmente às placas. A distância entre elas é $x$; sem tensão aplicada, $x=x_0$. A capacitância é $C(x)=\varepsilon A/x$, com $\varepsilon$ constante.</p>
+      <p>Se a carga na placa móvel é $q$ e a tensão entre as placas é $V$, então $q=C(x)\,V$. Como no gás ideal, em que $PV=nRT$ liga três grandezas, aqui as variáveis positivas $x$, $q$ e $V$ estão ligadas por uma relação, e quaisquer duas delas formam um conjunto de <em>variáveis de estado</em>. A energia elétrica armazenada é</p>
+      <div class="disp">\[ E=\frac{q^2}{2C}=\frac12\,C\,V^2 , \]</div>
+      <p>e, com a carga fixa, a força elétrica sobre a placa móvel, medida no sentido de $x$ crescente, é $F=-\dfrac{\partial E}{\partial x}(x,q)$.</p>
+    </div>
+    <figure>
+      <svg viewBox="0 0 240 230" role="img" aria-label="Suporte fixo no alto, mola vertical presa à placa móvel; abaixo, a placa fixa sobre o substrato; distância x entre as placas; fonte de tensão V ligada às duas placas.">
+        <path d="M40 20H170" stroke="currentColor" stroke-width="2"/>
+        <path d="M45 20l-8-10M60 20l-8-10M75 20l-8-10M90 20l-8-10M105 20l-8-10M120 20l-8-10M135 20l-8-10M150 20l-8-10M165 20l-8-10" stroke="currentColor" stroke-width="1"/>
+        <path d="M105 20v10l-14 6 28 10-28 10 28 10-28 10 14 6v10" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="124" y="64" font-size="14" font-style="italic" fill="currentColor" font-family="var(--serif)">k</text>
+        <rect x="50" y="98" width="110" height="9" fill="var(--accent)" fill-opacity=".35" stroke="var(--accent)" stroke-width="1.4"/>
+        <text x="58" y="94" font-size="12" fill="currentColor" font-family="var(--serif)">placa móvel</text>
+        <rect x="50" y="165" width="110" height="9" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width="1.4"/>
+        <rect x="35" y="174" width="140" height="18" fill="currentColor" fill-opacity=".08" stroke="currentColor" stroke-width="1"/>
+        <text x="66" y="205" font-size="12" fill="currentColor" font-family="var(--serif)">placa fixa / substrato</text>
+        <path d="M30 107V165" stroke="currentColor" stroke-width="1"/>
+        <path d="M30 107l-4 8h8zM30 165l-4-8h8z" fill="currentColor"/>
+        <text x="16" y="141" font-size="14" font-style="italic" fill="currentColor" font-family="var(--serif)">x</text>
+        <path d="M160 102H205V125M205 147V170H160" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <circle cx="205" cy="136" r="11" fill="var(--sheet)" stroke="currentColor" stroke-width="1.3"/>
+        <text x="199" y="133" font-size="11" fill="currentColor" font-family="var(--serif)">+</text>
+        <text x="200" y="146" font-size="12" fill="currentColor" font-family="var(--serif)">−</text>
+        <text x="220" y="140" font-size="14" font-style="italic" fill="currentColor" font-family="var(--serif)">V</text>
+      </svg>
+      <figcaption>Figura 2. Atuador de placas paralelas.</figcaption>
+    </figure>
+  </div>
+
+  <div class="items">
+    <div class="item" data-item="2a">
+      <p><b class="lbl">a.</b> Realize as seguintes operações: (i) escreva $E$ como função de $(x,V)$ e derive em relação a $x$; (ii) substitua $V$ em função de $x$ e $q$; (iii) multiplique o resultado por $-1$. A expressão obtida é a da força em função de $x$ e $q$? Justifique. <span class="pts">[0,8]</span></p>
+      <textarea id="t-2a" aria-label="Resolução do item 2a"></textarea>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>(i) $E(x,V)=\dfrac{\varepsilon A V^2}{2x}$, $\dfrac{\partial E}{\partial x}(x,V)=-\dfrac{\varepsilon AV^2}{2x^2}$. (ii) $V=\dfrac{qx}{\varepsilon A}$ dá $-\dfrac{q^2}{2\varepsilon A}$. (iii) Resultado: $+\dfrac{q^2}{2\varepsilon A}$.</p>
+        <p><strong>Não</strong> é a força. A derivada parcial depende de quais variáveis ficam fixas: o roteiro derivou mantendo $V$ fixo, mas $F$ exige derivar mantendo $q$ fixo. Pela regra da cadeia, com $E(x,q)=E\big(x,V(x,q)\big)$,</p>
+        <p>\[ \frac{\partial E}{\partial x}(x,q)=\frac{\partial E}{\partial x}(x,V)+\frac{\partial E}{\partial V}(x,V)\,\frac{\partial V}{\partial x}(x,q), \]</p>
+        <p>e a segunda parcela, $\dfrac{\varepsilon AV}{x}\cdot\dfrac{q}{\varepsilon A}=\dfrac{\varepsilon AV^2}{x^2}$, não é nula. Além disso o roteiro dá força positiva (repulsão), absurda para placas com cargas opostas.</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Executa o roteiro corretamente <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Responde "não" identificando a variável que deveria ficar fixa <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Regra da cadeia ou argumento físico do sinal <span class="p">0,2</span></label></li>
+        </ul>
+        <p class="trap"><b>Erro típico:</b> responder "sim, é só trocar a variável no fim". Trocar a variável depois de derivar não é o mesmo que derivar a função composta.</p>
+      </div>
+    </div>
+
+    <div class="item" data-item="2b">
+      <p><b class="lbl">b.</b> Obtenha a força $F$ em função de $(x,q)$ e em função de $(x,V)$. Interprete o sinal. <span class="pts">[0,6]</span></p>
+      <textarea id="t-2b" aria-label="Resolução do item 2b"></textarea>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>$E(x,q)=\dfrac{q^2x}{2\varepsilon A}$, logo $F(x,q)=-\dfrac{q^2}{2\varepsilon A}$. Com $q=\varepsilon AV/x$: $F(x,V)=-\dfrac{\varepsilon AV^2}{2x^2}$.</p>
+        <p>$F\lt0$: a força tende a diminuir $x$, ou seja, as placas se atraem. A força num estado é uma só; o que muda é a função que a descreve em cada par de variáveis de estado.</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.3" disabled> $F(x,q)$ correta <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> $F(x,V)$ correta e sinal interpretado <span class="p">0,3</span></label></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="item" data-item="2c">
+      <p><b class="lbl">c.</b> O atuador é agora ligado a uma fonte que mantém a tensão $V$, e a mola exerce sobre a placa móvel a força $k(x_0-x)$ no sentido de $x$ crescente.</p>
+      <p>(i) Justifique que as posições de equilíbrio satisfazem $G(x,V)=2kx^2(x_0-x)-\varepsilon AV^2=0$, com $0\lt x\le x_0$.</p>
+      <p>(ii) Usando o Teorema da Função Implícita, mostre que perto de um equilíbrio $(\bar x,\bar V)$ com $\bar x\neq \tfrac23x_0$ a posição de equilíbrio é uma função de classe $C^1$ da tensão, $x=\xi(V)$, e calcule $\xi'(\bar V)$. Qual é o sinal de $\xi'(\bar V)$ quando $\bar x\gt\tfrac23x_0$? Interprete. <span class="pts">[0,8]</span></p>
+      <textarea id="t-2c" aria-label="Resolução do item 2c"></textarea>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>(i) Equilíbrio: $k(x_0-x)+F(x,V)=0$, isto é, $k(x_0-x)=\dfrac{\varepsilon AV^2}{2x^2}$. Multiplicando por $2x^2\gt0$ obtém-se $G=0$.</p>
+        <p>(ii) $G$ é polinomial, logo $C^1$. $G_x=2k(2x_0x-3x^2)=2kx(2x_0-3x)$, que não se anula para $x\gt0$, $x\neq\tfrac23x_0$. Pelo TFI existe $\xi$ de classe $C^1$ com $G(\xi(V),V)=0$ perto de $\bar V$, e</p>
+        <p>\[ \xi'(\bar V)=-\frac{G_V}{G_x}=\frac{2\varepsilon A\bar V}{2k\bar x(2x_0-3\bar x)}=\frac{\varepsilon A\bar V}{k\,\bar x\,(2x_0-3\bar x)}. \]</p>
+        <p>Se $\bar x\gt\tfrac23x_0$, então $2x_0-3\bar x\lt0$ e $\xi'(\bar V)\lt0$: aumentar a tensão aproxima as placas, como se espera de um atuador.</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Equação de equilíbrio justificada <span class="p">0,2</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Hipóteses do TFI com $G_x$ calculada <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> $\xi'(\bar V)$ e sinal interpretado <span class="p">0,3</span></label></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="item" data-item="2d">
+      <p><b class="lbl">d.</b> Mostre que existe uma tensão crítica $V_{\mathrm{pi}}$ tal que: se $0\lt V\lt V_{\mathrm{pi}}$, há exatamente duas posições de equilíbrio em $(0,x_0)$; se $V=V_{\mathrm{pi}}$, há uma; se $V\gt V_{\mathrm{pi}}$, não há nenhuma. Calcule $V_{\mathrm{pi}}$ e a posição correspondente. O que acontece fisicamente quando $V$ ultrapassa $V_{\mathrm{pi}}$? Relacione com o item (c). <span class="pts">[0,8]</span></p>
+      <textarea id="t-2d" aria-label="Resolução do item 2d"></textarea>
+      <div class="finals"><div class="final"><label for="f-2d">Posição crítica $x/x_0=$</label><input id="f-2d" data-ans="0.6667" data-tol="0.005" inputmode="decimal"><span class="chk" aria-live="polite"></span></div></div>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>Seja $h(x)=x^2(x_0-x)$; o equilíbrio é $h(x)=\beta$, com $\beta=\dfrac{\varepsilon AV^2}{2k}\gt0$. Temos $h(0)=h(x_0)=0$ e $h'(x)=x(2x_0-3x)$: $h$ é estritamente crescente em $(0,\tfrac23x_0]$ e estritamente decrescente em $[\tfrac23x_0,x_0)$, com máximo $h(\tfrac23x_0)=\tfrac{4x_0^3}{27}$.</p>
+        <p>Pelo Teorema do Valor Intermediário e pela monotonicidade em cada trecho: duas soluções se $\beta\lt\tfrac{4x_0^3}{27}$, uma se $\beta=\tfrac{4x_0^3}{27}$ e nenhuma se $\beta\gt\tfrac{4x_0^3}{27}$. A igualdade dá</p>
+        <p>\[ V_{\mathrm{pi}}=\sqrt{\frac{8kx_0^3}{27\,\varepsilon A}},\qquad x=\tfrac23x_0. \]</p>
+        <p>Acima de $V_{\mathrm{pi}}$ não há equilíbrio: a força elétrica vence a mola e a placa móvel colapsa sobre a fixa (<em>pull-in</em>). É exatamente o ponto em que $G_x=0$, onde o TFI de (c) falha: o ramo de equilíbrios "dobra" e deixa de ser gráfico de uma função de $V$.</p>
+        <p class="interp">Interpretação possível: a rigidez efetiva no equilíbrio é $k-\dfrac{\varepsilon AV^2}{x^3}=\dfrac{k(3x-2x_0)}{x}$, positiva só no ramo $x\gt\tfrac23x_0$. Por isso só esse ramo é observado, e um atuador eletrostático só consegue fechar com controle um terço da distância inicial.</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Estudo de $h$ (derivada, monotonicidade, máximo) <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Contagem de soluções justificada (TVI + monotonicidade) <span class="p">0,2</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.2" disabled> $V_{\mathrm{pi}}$ e $x=\tfrac23x_0$ <span class="p">0,2</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.1" disabled> Pull-in e relação com $G_x=0$ <span class="p">0,1</span></label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUESTÃO 3 ================= -->
+<section class="sheet q" data-q="3" aria-labelledby="q3h">
+  <div class="qhead"><h2 id="q3h">Questão 3 <span>(Valor: 3,5 pontos). Resfriamento de módulos de bateria</span></h2><span class="qnote" data-qnote="3"></span></div>
+  <div class="intro">
+    <div>
+      <p>Dois módulos idênticos de um pacote de baterias estão em contato térmico e trocam calor com o ar, cuja temperatura $T_a$ é constante. Seja $\theta_i=T_i-T_a$ o excesso de temperatura do módulo $i$. O modelo (lei de resfriamento de Newton) supõe que cada módulo perde calor para o ar a uma taxa proporcional a $\theta_i$, com constante $h$, e troca calor com o outro módulo a uma taxa proporcional à diferença de temperaturas, com constante $c$:</p>
+      <div class="disp">\[ \begin{cases}\theta_1'=-h\,\theta_1-c\,(\theta_1-\theta_2)\\[2pt] \theta_2'=-h\,\theta_2-c\,(\theta_2-\theta_1)\end{cases} \]</div>
+      <p>Medindo o tempo em unidades de $\tau=10$ min, tem-se $h=c=1$.</p>
+    </div>
+    <figure>
+      <svg viewBox="0 0 250 200" role="img" aria-label="Dois blocos retangulares lado a lado e em contato, módulo 1 à esquerda com temperatura T1 e módulo 2 à direita com T2; seta dupla na interface indicando troca c; setas onduladas saindo para o ar ambiente à temperatura Ta indicando troca h.">
+        <rect x="45" y="55" width="75" height="95" fill="var(--pen)" fill-opacity=".14" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="120" y="55" width="75" height="95" fill="var(--accent)" fill-opacity=".14" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="70" y="47" width="25" height="8" fill="currentColor" fill-opacity=".5"/>
+        <rect x="145" y="47" width="25" height="8" fill="currentColor" fill-opacity=".5"/>
+        <text x="62" y="98" font-size="15" fill="currentColor" font-family="var(--serif)">M₁</text>
+        <text x="64" y="120" font-size="14" font-style="italic" fill="currentColor" font-family="var(--serif)">T₁</text>
+        <text x="137" y="98" font-size="15" fill="currentColor" font-family="var(--serif)">M₂</text>
+        <text x="139" y="120" font-size="14" font-style="italic" fill="currentColor" font-family="var(--serif)">T₂</text>
+        <path d="M108 136H132" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M106 136l7-4v8zM134 136l-7-4v8z" fill="currentColor"/>
+        <text x="116" y="168" font-size="13" font-style="italic" fill="currentColor" font-family="var(--serif)">c</text>
+        <g fill="none" stroke="currentColor" stroke-width="1.2">
+          <path d="M45 85c-6-3-8 3-14 0s-8 3-14 0"/><path d="M195 85c6-3 8 3 14 0s8 3 14 0"/>
+          <path d="M82 55c-3-6 3-8 0-14s3-8 0-14"/><path d="M158 55c-3-6 3-8 0-14s3-8 0-14"/>
+        </g>
+        <text x="8" y="76" font-size="13" font-style="italic" fill="currentColor" font-family="var(--serif)">h</text>
+        <text x="228" y="76" font-size="13" font-style="italic" fill="currentColor" font-family="var(--serif)">h</text>
+        <text x="98" y="190" font-size="13" fill="currentColor" font-family="var(--serif)">ar a <tspan font-style="italic">T</tspan><tspan font-size="10" dy="3">a</tspan></text>
+      </svg>
+      <figcaption>Figura 3. Módulos em contato térmico.</figcaption>
+    </figure>
+  </div>
+
+  <div class="items">
+    <div class="item" data-item="3a">
+      <p><b class="lbl">a.</b> Escreva o sistema na forma $\vec\theta\,'=M\vec\theta$. Mostre que $M$ é diagonalizável, exibindo seus autovalores e uma base ortonormal $B=\{\vec v_1,\vec v_2\}$ de autovetores. Por que era possível garantir a existência dessa base antes de fazer qualquer conta? <span class="pts">[0,8]</span></p>
+      <textarea id="t-3a" aria-label="Resolução do item 3a"></textarea>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>\[ M=\begin{pmatrix}-2&amp;1\\1&amp;-2\end{pmatrix},\qquad \det(M-\lambda I)=(\lambda+2)^2-1=(\lambda+1)(\lambda+3). \]</p>
+        <p>$\lambda_1=-1$: $\vec v_1=\tfrac{1}{\sqrt2}(1,1)$. $\lambda_2=-3$: $\vec v_2=\tfrac{1}{\sqrt2}(1,-1)$. Autovalores distintos já garantem a diagonalização; a base ortonormal existe antes de qualquer conta porque $M$ é real e simétrica (teorema espectral). Em geral, os autovalores são $-h$ e $-(h+2c)$.</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Matriz $M$ correta <span class="p">0,2</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Autovalores $-1$ e $-3$ <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Autovetores unitários e ortogonais <span class="p">0,2</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.1" disabled> Justificativa pela simetria <span class="p">0,1</span></label></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="item" data-item="3b">
+      <p><b class="lbl">b.</b> Escreva $\vec\theta(t)=g_1(t)\,\vec v_1+g_2(t)\,\vec v_2$. Substitua no sistema e, comparando coordenadas na base $B$, obtenha equações diferenciais ordinárias para $g_1$ e $g_2$. Resolva-as e escreva a solução geral do sistema. <span class="pts">[0,6]</span></p>
+      <textarea id="t-3b" aria-label="Resolução do item 3b"></textarea>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>$g_1'\vec v_1+g_2'\vec v_2=M(g_1\vec v_1+g_2\vec v_2)=-g_1\vec v_1-3g_2\vec v_2$. Como $\vec v_1,\vec v_2$ são LI, $g_1'=-g_1$ e $g_2'=-3g_2$, logo $g_1=a\,e^{-t}$, $g_2=b\,e^{-3t}$ e</p>
+        <p>\[ \vec\theta(t)=a\,e^{-t}\,\vec v_1+b\,e^{-3t}\,\vec v_2,\qquad a,b\in\mathbb R. \]</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Usa $M\vec v_i=\lambda_i\vec v_i$ e independência linear para desacoplar <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Resolve as duas EDOs e escreve a solução geral <span class="p">0,3</span></label></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="item" data-item="3c">
+      <p><b class="lbl">c.</b> Em $t=0$, o módulo 1 está $40\,{}^{\circ}\mathrm{C}$ acima da temperatura ambiente e o módulo 2 está à temperatura ambiente. Determine $\vec\theta(t)$. <span class="pts">[0,5]</span></p>
+      <textarea id="t-3c" aria-label="Resolução do item 3c"></textarea>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>$\vec\theta(0)=(40,0)=\tfrac{a}{\sqrt2}(1,1)+\tfrac{b}{\sqrt2}(1,-1)$ dá $a=b=20\sqrt2$ (ou, pela base ortonormal, $a=\vec\theta(0)\cdot\vec v_1$, $b=\vec\theta(0)\cdot\vec v_2$). Logo</p>
+        <p>\[ \theta_1(t)=20e^{-t}+20e^{-3t},\qquad \theta_2(t)=20e^{-t}-20e^{-3t}. \]</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Constantes $a=b=20\sqrt2$ <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.2" disabled> $\theta_1$ e $\theta_2$ explícitas <span class="p">0,2</span></label></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="item" data-item="3d">
+      <p><b class="lbl">d.</b> O módulo 2 primeiro esquenta e depois esfria. Determine o instante, em minutos, em que $\theta_2$ é máximo e o valor desse máximo, justificando que se trata de um máximo. <span class="pts">[0,8]</span></p>
+      <textarea id="t-3d" aria-label="Resolução do item 3d"></textarea>
+      <div class="finals">
+        <div class="final"><label for="f-3d1">Instante (min) ≈</label><input id="f-3d1" data-ans="5.493" data-tol="0.03" inputmode="decimal"><span class="chk" aria-live="polite"></span></div>
+        <div class="final"><label for="f-3d2">$\theta_{2,\max}$ (°C) ≈</label><input id="f-3d2" data-ans="7.698" data-tol="0.02" inputmode="decimal"><span class="chk" aria-live="polite"></span></div>
+      </div>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>$\theta_2'(t)=-20e^{-t}+60e^{-3t}=0\iff e^{2t}=3\iff t^*=\tfrac12\ln3$ (em unidades de $\tau$), ou seja, $5\ln3\approx5{,}49$ min. Para $t\lt t^*$, $\theta_2'\gt0$; para $t\gt t^*$, $\theta_2'\lt0$: é máximo (global em $t\ge0$).</p>
+        <p>\[ \theta_2(t^*)=20\left(3^{-1/2}-3^{-3/2}\right)=\frac{40}{3\sqrt3}=\frac{40\sqrt3}{9}\approx7{,}70\ {}^{\circ}\mathrm{C}. \]</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Deriva e iguala a zero <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.2" disabled> $t^*$ convertido para minutos <span class="p">0,2</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Valor máximo e justificativa (sinal de $\theta_2'$ ou $\theta_2''$) <span class="p">0,3</span></label></li>
+        </ul>
+        <p class="trap"><b>Erro típico:</b> responder $t^*\approx0{,}55$ "min", esquecendo que o tempo foi medido em unidades de $\tau=10$ min.</p>
+      </div>
+    </div>
+
+    <div class="item" data-item="3e">
+      <p><b class="lbl">e.</b> Considere a curva $\gamma(t)=\big(\theta_1(t),\theta_2(t)\big)$, $t\ge0$, no plano $(\theta_1,\theta_2)$. Usando as coordenadas $(g_1,g_2)$ na base $B$, obtenha uma equação cartesiana para a imagem de $\gamma$ e identifique-a. Mostre que $\gamma$ chega à origem tangenciando a reta $\theta_1=\theta_2$, calculando $\displaystyle\lim_{t\to\infty}\frac{\gamma'(t)}{\|\gamma'(t)\|}$. Interprete. <span class="pts">[0,8]</span></p>
+      <textarea id="t-3e" aria-label="Resolução do item 3e"></textarea>
+      <div class="corr nomath" hidden>
+        <span class="tag">correção</span>
+        <p>De (c), $g_1=20\sqrt2\,e^{-t}$ e $g_2=20\sqrt2\,e^{-3t}$. Eliminando $t$: $g_1^3=16000\sqrt2\,e^{-3t}$, logo</p>
+        <p>\[ g_2=\frac{g_1^3}{800},\qquad 0\lt g_1\le 20\sqrt2: \]</p>
+        <p>um arco de cúbica nos eixos $(g_1,g_2)$, que são os eixos $(\theta_1,\theta_2)$ girados de $45^\circ$. Para a tangente, $\gamma'(t)=20e^{-t}\big(-1-3e^{-2t},\,-1+3e^{-2t}\big)$; dividindo pela norma e fazendo $t\to\infty$, obtém-se $-\tfrac{1}{\sqrt2}(1,1)$. A curva entra na origem pela direção de $\vec v_1$, a reta $\theta_1=\theta_2$.</p>
+        <p class="interp">Interpretação possível: o modo "diferença" ($\vec v_2$, autovalor $-3$) decai três vezes mais rápido que o modo "média" ($\vec v_1$, autovalor $-1$). Os módulos primeiro igualam suas temperaturas pelo contato e depois esfriam juntos, com constante de tempo $\tau/h=10$ min, que é a que importa no projeto do pacote.</p>
+        <ul class="rub">
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Usa $g_1,g_2$ obtidos em (b)/(c) <span class="p">0,2</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.3" disabled> Equação $g_2=g_1^3/800$ e identificação (cúbica em eixos girados) <span class="p">0,3</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.2" disabled> Limite da direção tangente <span class="p">0,2</span></label></li>
+          <li><label><input type="checkbox" data-pts="0.1" disabled> Interpretação dos dois modos <span class="p">0,1</span></label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <p class="foot">Simulado gerado a partir do padrão das provas integradoras do Pilar. Gabarito conferido com cálculo simbólico.</p>
+</section>
+
+</main>
+
+<script>
+(function(){
+  const DUR = 4*3600;
+  let left = DUR, timer = null, submitted = false, armTimer = null, typeset = false;
+  const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+  const clock = $('#clock'), btnStart = $('#btnStart'), btnSubmit = $('#btnSubmit'), btnReset = $('#btnReset'), scoreTop = $('#scoreTop');
+  const fmt = s => { const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return h+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0'); };
+  const br = n => n.toFixed(1).replace('.', ',');
+  function paint(){ clock.textContent = fmt(left); clock.classList.toggle('warn', timer !== null && left <= 120); }
+
+  // rascunhos salvos neste navegador (conveniência)
+  const KEY = 'pilar2-integradora-v1:';
+  $$('textarea, .idgrid input').forEach(el => {
+    try { const v = localStorage.getItem(KEY + el.id); if (v) el.value = v; } catch(e) {}
+    el.addEventListener('input', () => { try { localStorage.setItem(KEY + el.id, el.value); } catch(e) {} });
+  });
+
+  btnStart.addEventListener('click', () => {
+    if (timer || submitted) return;
+    timer = setInterval(() => { left--; paint(); if (left <= 0) { clearInterval(timer); timer = null; submit(); } }, 1000);
+    btnStart.disabled = true; btnStart.textContent = 'Em andamento'; paint();
+  });
+
+  btnSubmit.addEventListener('click', () => {
+    if (submitted) return;
+    if (!btnSubmit.dataset.armed) {
+      btnSubmit.dataset.armed = '1'; btnSubmit.textContent = 'Confirmar entrega';
+      armTimer = setTimeout(() => { delete btnSubmit.dataset.armed; btnSubmit.textContent = 'Entregar'; }, 4000);
+      return;
+    }
+    clearTimeout(armTimer); submit();
+  });
+
+  function parseNum(s){ s = (s||'').trim().replace(/\s/g,'').replace(',', '.'); if (!s) return NaN; return Number(s); }
+
+  function submit(){
+    submitted = true;
+    if (timer) { clearInterval(timer); timer = null; }
+    delete btnSubmit.dataset.armed; btnSubmit.textContent = 'Entregue'; btnSubmit.disabled = true;
+    btnStart.disabled = true; btnReset.hidden = false; paint();
+    $$('textarea, .final input').forEach(el => el.readOnly = true);
+    $$('.final input').forEach(inp => {
+      const v = parseNum(inp.value), ans = Number(inp.dataset.ans), tol = Number(inp.dataset.tol);
+      const chk = inp.parentElement.querySelector('.chk');
+      const shown = String(ans).replace('.', ',');
+      if (!isNaN(v) && Math.abs(v - ans) <= tol) { chk.textContent = '✓'; chk.className = 'chk ok'; }
+      else { chk.textContent = '✗ esperado ' + shown; chk.className = 'chk bad'; }
+    });
+    const corr = $$('.corr');
+    corr.forEach(c => { c.hidden = false; c.querySelectorAll('input[type=checkbox]').forEach(cb => cb.disabled = false); });
+    if (!typeset) {
+      corr.forEach(c => c.classList.remove('nomath'));
+      const go = () => { if (window.MathJax && MathJax.typesetPromise) { MathJax.typesetPromise(corr).catch(()=>{}); typeset = true; } else setTimeout(go, 300); };
+      go();
+    }
+    score();
+    corr[0].closest('.sheet').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  }
+
+  function score(){
+    let total = 0;
+    [1,2,3].forEach(q => {
+      let s = 0;
+      $$('.q[data-q="'+q+'"] .rub input:checked').forEach(cb => s += Number(cb.dataset.pts));
+      s = Math.round(s*10)/10; total += s;
+      $('#nt'+q).textContent = submitted ? br(s) : '';
+      $('[data-qnote="'+q+'"]').textContent = submitted ? 'nota: ' + br(s) : '';
+    });
+    total = Math.round(total*10)/10;
+    $('#ntT').textContent = submitted ? br(total) : '';
+    scoreTop.hidden = !submitted; scoreTop.textContent = br(total) + ' / 10';
+  }
+  document.addEventListener('change', e => { if (e.target.matches('.rub input')) score(); });
+
+  btnReset.addEventListener('click', () => {
+    submitted = false; left = DUR;
+    $$('textarea').forEach(el => { el.value = ''; el.readOnly = false; try { localStorage.removeItem(KEY + el.id); } catch(e) {} });
+    $$('.final input').forEach(el => { el.value = ''; el.readOnly = false; });
+    $$('.chk').forEach(c => { c.textContent = ''; c.className = 'chk'; });
+    $$('.rub input').forEach(cb => { cb.checked = false; cb.disabled = true; });
+    $$('.corr').forEach(c => c.hidden = true);
+    btnStart.disabled = false; btnStart.textContent = 'Iniciar';
+    btnSubmit.disabled = false; btnSubmit.textContent = 'Entregar';
+    btnReset.hidden = true; score(); paint();
+    window.scrollTo({top: 0});
+  });
+
+  paint();
+})();
+</script>
