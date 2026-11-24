@@ -7,7 +7,10 @@
 
 # agents
 
-Skills I use with Claude Code on a university HPC cluster. Right now there is one.
+Skills I use in day-to-day building.
+
+- [delegate](#delegate): splits coding work between models by cost.
+- [pr-brief](skills/pr-brief/README.md): briefs a reviewer on a pull request they didn't write, then answers questions about it.
 
 ## delegate
 
