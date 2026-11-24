@@ -28,7 +28,7 @@ If the invocation already says which language to use, take that as the answer an
 Pick a scratch directory: `$PR_BRIEF_SCRATCH` if set, otherwise `${TMPDIR:-/tmp}/pr-brief-$USER`. Keep worktrees and outputs there, not in the repo checkout.
 
 ```bash
-python3 <skill>/scripts/gather_pr.py <PR#> --repo <repo-path> --out <scratch>/pr-<N>
+python3 ${CLAUDE_SKILL_DIR}/scripts/gather_pr.py <PR#> --repo <repo-path> --out <scratch>/pr-<N>
 ```
 
 This writes `pr.json` (metadata, body, commits, reviews and comments, linked issues with their comments, the author's repository permission) and fetches the PR head as `refs/pr-brief/<N>`. Read `pr.json` in full; the description and comments often explain choices the diff can't.
@@ -38,7 +38,7 @@ This writes `pr.json` (metadata, body, commits, reviews and comments, linked iss
 ## Step 2: sort the hunks
 
 ```bash
-python3 <skill>/scripts/classify_hunks.py --repo <repo> --base <base-ref> --head refs/pr-brief/<N> --out <scratch>/pr-<N>/hunks.json
+python3 ${CLAUDE_SKILL_DIR}/scripts/classify_hunks.py --repo <repo> --base <base-ref> --head refs/pr-brief/<N> --out <scratch>/pr-<N>/hunks.json
 ```
 
 Every hunk gets an id and a class:
@@ -68,7 +68,7 @@ Group hunks into **changes**: one change is one behaviour the reviewer would rec
 and check that nothing was left out:
 
 ```bash
-python3 <skill>/scripts/coverage_check.py <scratch>/pr-<N>/hunks.json <scratch>/pr-<N>/changes.json
+python3 ${CLAUDE_SKILL_DIR}/scripts/coverage_check.py <scratch>/pr-<N>/hunks.json <scratch>/pr-<N>/changes.json
 ```
 
 Any hunk it lists as unexplained gets read and either added to a change or listed in the brief under "Unexplained hunks" with a one-line description. The point is that nothing in the PR changes quietly.
@@ -76,7 +76,7 @@ Any hunk it lists as unexplained gets read and either added to a change or liste
 ## Step 4: map what could be affected
 
 ```bash
-python3 <skill>/scripts/impact.py --repo <repo> --head refs/pr-brief/<N> --hunks <scratch>/pr-<N>/hunks.json --out <scratch>/pr-<N>/impact.json
+python3 ${CLAUDE_SKILL_DIR}/scripts/impact.py --repo <repo> --head refs/pr-brief/<N> --hunks <scratch>/pr-<N>/hunks.json --out <scratch>/pr-<N>/impact.json
 ```
 
 This lists the functions, methods and classes the PR touches, and every place at the PR head that uses them: library modules, `bin/` commands (many have no file extension), tests and docs. Read the call sites that matter and say for each whether the change reaches it, it doesn't, or you couldn't tell.
@@ -102,7 +102,7 @@ Don't borrow unrelated environments (another project's venv, a shared conda env 
 Use the comparison script; it runs the same command on the base and on the PR head in two scratch worktrees and diffs the outputs:
 
 ```bash
-bash <skill>/scripts/compare.sh <repo> <base-ref> refs/pr-brief/<N> -- '<command using $WT for repo paths>'
+bash ${CLAUDE_SKILL_DIR}/scripts/compare.sh <repo> <base-ref> refs/pr-brief/<N> -- '<command using $WT for repo paths>'
 ```
 
 Keep inputs tiny (test fixtures in the repo, or a few rows you write yourself into the scratch directory). No full test suites, no large data, no Slurm jobs. Run at most a handful of focused checks: one per main change is plenty. The script never times anything; don't add timing.

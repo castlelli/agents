@@ -1,0 +1,13 @@
+{
+  "name": "castlelli-agents",
+  "description": "Skills for ambitious builders.",
+  "owner": { "name": "castlelli" },
+  "plugins": [
+    {
+      "name": "pr-brief",
+      "source": "./",
+      "description": "Brief a reviewer on a pull request they didn't write, then answer questions about it.",
+      "skills": ["./skills/pr-brief"]
+    }
+  ]
+}

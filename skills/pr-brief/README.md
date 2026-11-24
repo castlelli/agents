@@ -28,20 +28,34 @@ Claude Code (or another agent that reads `SKILL.md` skills), `git`, the GitHub C
 
 ## Install
 
-```bash
-cp -r skills/pr-brief ~/.claude/skills/
-```
-
-Or zip the folder and upload it wherever your AI tool takes skills:
+As a Claude Code plugin (gets updates with `claude plugin update`):
 
 ```bash
-cd skills && zip -r pr-brief.zip pr-brief
+claude plugin marketplace add castlelli/agents
+claude plugin install pr-brief@castlelli-agents --scope user
 ```
+
+Inside a session the same thing is `/plugin install pr-brief --marketplace castlelli/agents` (Claude Code 2.1.275 or later). The plugin's command is `/pr-brief:pr-brief`.
+
+As a standalone skill, with the [skills CLI](https://github.com/vercel-labs/skills):
+
+```bash
+npx skills add castlelli/agents --skill pr-brief -a claude-code -g
+```
+
+Or by hand:
+
+```bash
+git clone https://github.com/castlelli/agents
+cp -r agents/skills/pr-brief ~/.claude/skills/
+```
+
+For tools that take skills as uploads, zip the folder: `cd agents/skills && zip -r pr-brief.zip pr-brief`.
 
 ## Use
 
 ```
-/pr-brief 172
+/pr-brief 172            # /pr-brief:pr-brief 172 when installed as a plugin
 /pr-brief queue          # one line for each PR waiting on your review
 ```
 

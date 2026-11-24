@@ -7,7 +7,18 @@
 
 # agents
 
-Skills I use in day-to-day building.
+Skills for ambitious builders.
 
 - [delegate](skills/delegate/README.md): splits coding work between models by cost.
 - [pr-brief](skills/pr-brief/README.md): briefs a reviewer on a pull request they didn't write, then answers questions about it.
+
+## Install
+
+Each skill's README has its own install steps. As Claude Code plugins:
+
+```bash
+claude plugin marketplace add castlelli/agents
+claude plugin install pr-brief@castlelli-agents --scope user
+```
+
+Or as standalone skills: `npx skills add castlelli/agents --skill pr-brief -a claude-code -g`.
